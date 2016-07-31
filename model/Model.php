@@ -17,6 +17,16 @@ class Model
 		  }
 		  return "NEMAKATEGORIJE";
 	  }
+	  public static function ispis_trkaca($ime)
+	{
+		$data=Controller::db_result_tray($ime);
+		//print_r($data);
+		foreach($data as $k)
+		{
+			echo($k["ime"]."(".$k["godina"].")<br>");
+		}
+		echo('<a href="dodaj_korisnika.php?dod=1">Dodajte novog trkača</a><br>');
+	}
 	  
 }
 class Trkac
@@ -50,6 +60,7 @@ class Trkac
 		$i=0;
 		for($i=0;$i<30;++$i)$this->bodovi2[$i]=0;
 	}
+	
 	public function dodaj_rezultat($bodovi,$bodovi2)
 	  {
 	      //1-8 Nasip1

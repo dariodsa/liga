@@ -1,4 +1,13 @@
+<meta charset="UTF-8">
 <?
+require_once('controller/Controller.php');
+require_once('model/Model.php');
+$duga=0;
+$kratka=0;
+foreach($_GET as $k=>$p)
+{
+		$$k=$p;
+}
 if(isset($_GET['prijava']))
 {
 	print_r($_GET);
@@ -9,7 +18,7 @@ if(isset($_GET['prijava']))
 	//provjera i autentifikacija
 	echo"<script>document.location='index.php?uloga=1';</script>";
 }
-if(isset($_GET['uloga']) && $_GET['uloga']=='1')
+else if(isset($_GET['uloga']) && $_GET['uloga']=='1')
 {
 	echo("Odabir uloga");
 	echo'
@@ -17,22 +26,35 @@ if(isset($_GET['uloga']) && $_GET['uloga']=='1')
 	       <input type="submit" name="vrijeme" value="Mjerim vrijeme">
 		   <input type="submit" name="brojevi" value="Bilježim brojeve kako ulaze">
 		   <input type="submit" name="glavni" value="Ispravljam moguće pogreške i nadgledam">
-		   <input type="submit" name="kratka" value="Prijave kratke">
-		   <input type="submit" name="duga" value="Prijave duge">
+		   <input type="submit" name="kratka" value="Prijave_kratke">
+		   <input type="submit" name="duga" value="Prijave_duge">
 	   </form>
 	';
 }
-if(isset($_GET['vrijeme']))
+else if(isset($_GET['vrijeme']))
 {}
-if(isset($_GET['brojevi']))
+else if(isset($_GET['brojevi']))
 {}
-if(isset($_GET['glavni']))
+else if(isset($_GET['glavni']))
 {}
-if(isset($_GET['kratka']) || isset($_GET['duga']))
+else if((isset($_GET['kratka']) && $_GET['kratka']!='0') || (isset($_GET['duga']) && $_GET['duga']!='0'))
 {
-		echo("jkl");
+		
+		if(isset($pretraga))
+		{
+			Model::ispis_trkaca($ime);
+		}
+		echo('Odabir trkaca');
+		echo'
+		<form method="GET" action="index.php">
+		<input type="text" name="ime" placeholder="Ime"/>
+		<input type="submit" value="Pretraži" name="pretraga"/>
+		<input type="hidden" name="kratka" value='.$kratka.'>
+		<input type="hidden" name="duga" value='.$duga.'>
+		</form>
+		';
 }
-?>
+else{echo'
 <meta charset="UTF-8">
 <form action="index.php" method="GET">
 <table >
@@ -50,4 +72,5 @@ if(isset($_GET['kratka']) || isset($_GET['duga']))
 	</tr>
 	<input type="hidden" value="nika" name="prijava"/>
 </table>
-</form>
+</form>';}
+?>
