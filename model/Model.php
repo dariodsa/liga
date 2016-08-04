@@ -17,16 +17,12 @@ class Model
 		  }
 		  return "NEMAKATEGORIJE";
 	  }
-	  public static function ispis_trkaca($ime)
-	{
+	  public static function list_of_runners($ime,$type)
+	  {
 		$data=Controller::db_result_tray($ime);
-		//print_r($data);
-		foreach($data as $k)
-		{
-			echo($k["ime"]."(".$k["godina"].")<br>");
-		}
-		echo('<a href="dodaj_korisnika.php?dod=1">Dodajte novog trkača</a><br>');
-	}
+		return $data;
+	  }
+	  
 	  
 }
 class Trkac

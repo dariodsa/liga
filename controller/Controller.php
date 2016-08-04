@@ -32,9 +32,25 @@ class Controller
 		  else 
 		  {
 		     echo("Error: ".mysql_error());
+			 die();
 		     return 0;
 		  }
 	  }
+	  public static function controll_user_interface()
+	  {
+		  if(!isset($_SESSION["ime"]))
+		  {
+			  View::login_form();
+			  die();
+		  }
+		  $ime=$_SESSION["ime"];
+		  $data=Controller::db_result("SELECT * FROM korisnici WHERE username='$ime'");
+		  if(count($data)==0)
+		  {
+			  View::login_form();
+			  die();
+		  }
+      }
 	  public static function db_result_tray($query)
 	  {
 	      $rezultat=mysql_query("SELECT * FROM trkaci ORDER BY ime");
