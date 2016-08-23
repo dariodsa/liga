@@ -12,7 +12,7 @@ foreach($data as $podatak)
 }
 $informacije=Controller::db_result("SELECT * FROM kolo_informacije  WHERE broj=$kolo AND godina=$godina");
 echo($informacije[0]["text"]);
-$rezultat=Controller::db_result("SELECT * FROM rezultati_duga  WHERE broj_kola=$kolo AND date=$godina ORDER BY vrijeme ASC");
+$rezultat=Controller::db_result("SELECT * FROM rezultati_kratka  WHERE broj_kola=$kolo AND date=$godina ORDER BY vrijeme ASC");
 echo"<table>";
 echo'
     <tr>

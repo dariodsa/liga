@@ -17,7 +17,7 @@ if(isset($_GET['ime']))
 	echo($data);
 	if(true)
 	{
-	  Controller::db_query("INSERT INTO rezultati_duga VALUES ('', '$id_trkaca', '$broj_kola', '$vrijeme','$bodovi','$date');");
+	  Controller::db_query("INSERT INTO rezultati_kratka VALUES ('', '$id_trkaca', '$broj_kola', '$vrijeme','$bodovi','$date');");
 	}
 }
 ?>

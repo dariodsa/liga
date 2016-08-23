@@ -6,7 +6,7 @@ class Model
       public $kategorije;
 	  public function __construct()
 	  {
-		  $this->kategorije=Controller::db_result("SELECT * FROM kategorije");
+		  $this->kategorije=Controller::db_result("SELECT min_godina,max_godina,naziv FROM kategorije");
 	  }
 	  public function odredi_kategoriju($trenutna_godina,$godina_rodenja)
 	  {
@@ -22,7 +22,64 @@ class Model
 		$data=Controller::db_result_tray($ime);
 		return $data;
 	  }
-	  
+	  public static function find_times($id)
+	  {
+		  $times=Controller::db_result("SELECT * FROM vremena");
+		  $data=Controller::db_result("SELECT * FROM brojevi");
+		  $i=0;
+		  
+		  //echo($id);
+		  foreach($data as $data_pom)
+		  {
+			  //echo"<pre>";echo($data_pom["broj"]);echo"</pre>";
+			  if($data_pom["broj"]==$id)
+			  {
+				  return $times[$i]["vremena"];
+			  }
+			  ++$i;
+		  }
+		  
+		  return "##:##";
+	  }
+	  public static function model_the_results($tip)
+	  {
+		  $times=Controller::db_result("SELECT * FROM vremena");
+		  $bid=Controller::db_result("SELECT * FROM brojevi");
+		  $data=Controller::db_result("SELECT * FROM prijave WHERE tip='".$tip."'");
+		  $runners=Controller::db_result("SELECT * FROM trkaci ORDER BY id");
+		  $con=new Controller($data,$runners);
+
+		  //Construct array which connect bid with runner_id
+		  $mapa=array();
+		  $i=0;
+		  foreach($data as $data_pom)
+		  {
+			  $mapa[$data_pom["broj"]][0]=$data_pom["id_trkaca"];
+		  }
+		  foreach($bid as $bid_pom)
+		  {
+			  $mapa[$bid_pom["broj"]][1]=$times[$i++]["vremena"];
+			  
+		  }
+		  echo"<table border=1>";
+		  $i=0;
+		  $poredak=1;
+		  foreach($bid as $bid_pom)
+		  {
+			 if(isset($mapa[$bid_pom["broj"]][0]))
+			 {
+				 $runner=($con->find($mapa[$bid_pom["broj"]][0]));
+				 $vrijeme=isset($mapa[$bid_pom["broj"]][1])?$mapa[$bid_pom["broj"]][1]:'';
+				 echo"<tr><td>$poredak.</td>";
+				 echo "<td>".$runner["ime"]."</td><td>".$vrijeme."</td></tr>";
+				 
+			 	 ++$poredak;
+			 }
+			 ++$i;
+		  }
+		  echo"</table>";
+		  return;
+	  }
 	  
 }
 class Trkac
@@ -39,7 +96,7 @@ class Trkac
 	public $naspi2;
 	public $zbroj;
 	public $kategorija;
-	public function __construct($id1,$ime1,$spol1,$godina1)
+	public function __construct($id1=0,$ime1="",$spol1="",$godina1="")
 	{
 		$this->id=$id1;
 		$this->godina=$godina1;
@@ -112,9 +169,7 @@ class Trkac
 		  //Nasip1
 		  $i=0;
 		  $broj=1;
-		  /*echo'<pre>';
-		  print_r($nasip1[$i]);
-		  echo'</pre>';*/
+		  
 		  for($i=$pok-1;$i>=0;--$i)
 		  {
 			  if($broj>5)break;

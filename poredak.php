@@ -5,7 +5,9 @@
 <?
 include('controller/Controller.php');
 include('model/Model.php');
-echo'<input type="button" onClick="window.print()" class="btn btn-primary " value="Isprintaj" >';
+include('view/View.php');
+echo'<input type="button" onClick="window.print()" value="Isprintaj" >';
+
 function cmp($a, $b)
 {
 	if(!isset($a->zbroj))print_r($a);
@@ -16,29 +18,45 @@ function cmp($a, $b)
 if(!isset($_GET['godina']))exit();
 $godina=$_GET['godina'];
 $trkaci=array();
-$data=Controller::db_result("SELECT * FROM trkaci");
+if($_GET['tip']=='1')$data=Controller::db_result("SELECT trkaci.*, count(*) as broj_rezultata
+FROM rezultati_duga
+INNER JOIN trkaci ON trkaci.id=rezultati_duga.id_trkaca
+group by trkaci.id
+order by trkaci.ime");
+else $data=Controller::db_result("SELECT trkaci.*, count(*) as broj_rezultata
+FROM rezultati_kratka
+INNER JOIN trkaci ON trkaci.id=rezultati_kratka.id_trkaca
+group by trkaci.id
+order by trkaci.ime");
 $i=0;
 foreach($data as $podatak)
 {
-     $trk=new Trkac($podatak["id"],$podatak["ime"],$podatak["spol"],$podatak["godina"]);
-	 $trk->id=$podatak["id"];
+     //print_r($podatak);
+	 $trk=new Trkac($podatak["id"],$podatak["ime"],$podatak["spol"],$podatak["godina"]);
+	 /*$trk->id=$podatak["id"];
 	 $trk->ime=$podatak["ime"];
 	 $trk->godina=$podatak["godina"];
 	 $trk->spol=$podatak["spol"];
-	 $trk->zbroj=0;
+	 $trk->zbroj=0;*/
 	 $trkaci[$podatak["id"]]=$trk;
 	 
 }
-$rezultat=Controller::db_result("SELECT * FROM rezultati_duga  WHERE date=$godina");
+$tip=$_GET['tip'];
+echo"<center>";
+if($tip==2)View::print_headline("Kratka staza");
+else View::print_headline("Duga staza");
+echo"</center>";
+if($tip=='1')$tip="duga";
+else $tip="kratka";
+$rezultat=Controller::db_result("SELECT id,id_trkaca,broj_kola,bodovi FROM rezultati_$tip  WHERE date=$godina AND id_trkaca!='0'");
+//echo(count($rezultat));
 /*
  * Postavljanje rezultat uz trkace
 */
 foreach($rezultat as $podatak)
 {
-	//print_r($podatak);
-	if($podatak["id_trkaca"]==0)continue;
+	//echo"<pre>";print_r($podatak);echo"</pre>";
 	$trkaci[$podatak["id_trkaca"]]->bodovi[$podatak["broj_kola"]]=$podatak["bodovi"];
-	
 }
 /*
 * Određivanje zbroja za određene cikluse kroz ligu ( Nasip proljece, Nasip zime,Maksimir proljece i jesen)
@@ -46,10 +64,24 @@ foreach($rezultat as $podatak)
 $model=new Model();
 foreach($trkaci as $data)
 {
-    if($data->id==0)continue;
+    //echo"<pre>";print_r($data);echo"</pre>";
+	//if(isset($data->zbroj)==false)continue;
 	$trkaci[$data->id]->zbroj=$data->dodaj_rezultat($data->bodovi,$data->bodovi2);
 	$trkaci[$data->id]->kategorija=($data->spol).$model->odredi_kategoriju($_GET['godina'],$data->godina);
 }
+
+/*
+Kreiram pomocno polje za sortiranje, za optimizaciju
+*/
+$polje_id=array();
+foreach($trkaci as $data)
+{
+	$t=new Trkac();
+	$t->zbroj=$data->zbroj;
+	$t->id=$data->id;
+	$polje_id[$data->id]=$t;
+}
+
 echo'<table border="1">';
 echo'
     <tr>
@@ -71,12 +103,13 @@ echo'
 	   <td></td>
 	</tr>
 ';
-usort($trkaci, "cmp");
+usort($polje_id, "cmp");
 $redni_broj=1;
 $poredak_kategorije=array("PO"=>"po");
-foreach($trkaci as $podatak)
+foreach($polje_id as $podatak_pom)
 {
     //if($podatak["id_trkaca"]==0){echo($podatak["vrijeme"]);continue;}
+	$podatak=$trkaci[$podatak_pom->id];
 	if($podatak->zbroj==0)continue;
 	if(!isset($podatak_kategorije[(string)$podatak->kategorija]))$podatak_kategorije[(string)$podatak->kategorija]=0;
 	
@@ -91,12 +124,13 @@ foreach($trkaci as $podatak)
 	{
 		if(!isset($podatak->bodovi[$i]))$pod=""; //echo"<td align=center>$pod";echo"</td>";
 		else $pod=$podatak->bodovi[$i];
-		if($podatak->bodovi2[$i]==0 && isset($podatak->bodovi[$i]))echo'<td align=center style="background-color:gray">'.$pod.'</td>';
+		$pod=round($pod,2);
+		if($podatak->bodovi2[$i]==0 && isset($podatak->bodovi[$i]))echo'<td align=center ><s>'.$pod.'</s></td>';
 		else if($podatak->bodovi2[$i]!=0 && isset($podatak->bodovi[$i]))echo"<td align=center>$pod</td>";
 		else echo"<td></td>";
 		 
 	}
-	echo"<td align=center>";echo($podatak->zbroj);echo"</td>";
+	echo"<td align=center>";echo(round($podatak->zbroj,3));echo"</td>";
 	echo"</tr>";
 	++$redni_broj;
 }

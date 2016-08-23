@@ -3,7 +3,44 @@ include('./baza.php');
 
 class Controller
 {
-      public static function db_result($query)
+      private $data;
+	  private $runners;
+	  public function Controller($data,$runners)
+	  {
+		  $this->data=$data;
+		  $this->runners=$runners;
+	  }
+	  public function find($id)
+	  {
+		  $low=0;
+		  $midd=0;
+		  $high=count($this->runners)-1;
+		  while($low<=$high)
+		  {
+			  $midd=($low+$high)/2;
+			  if($this->runners[$midd]["id"]==$id)return $this->runners[$midd];
+			  else if($this->runners[$midd]["id"]>$id)$high=$midd-1;
+			  else $low=$midd+1;
+		  }
+		  return $this->runners[$low];
+	  }
+	  public static function go_to($link)
+	  {
+		  echo"<script>document.location='$link';</script>";
+	  }
+	  public static function points_long($vrijeme)
+	  {
+		  //(1520/G27)^2*100
+		  sscanf($vrijeme, "%d:%d",$minutes, $seconds);
+		  
+		  if($minutes*60+$seconds==0)
+			  $ukupno=0;
+		  else 
+			  $ukupno=1520/($minutes*60+$seconds);
+		  
+		  return round((($ukupno*$ukupno)*100),2);
+	  }
+	  public static function db_result($query)
 	  {
 	      $rezultat=mysql_query($query);
 		  $data=array();

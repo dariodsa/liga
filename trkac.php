@@ -9,6 +9,7 @@ $data=Controller::db_result("SELECT * FROM trkaci WHERE id=$id");
 $trkac=$data[0];
 foreach($data as $trkac){}
 echo($trkac['ime']."<br>");
+echo($trkac['godina']."<br>");
 
 /*
 Dohvati njegove PB i broj nastupa
@@ -16,11 +17,18 @@ Dohvati njegove PB i broj nastupa
 $data_nasip=Controller::db_result("SELECT * FROM rezultati_duga WHERE id_trkaca=$id AND ( (broj_kola>=1 AND broj_kola<=8) OR (broj_kola>=22)) ORDER BY vrijeme");
 //print_r($data_nasip[0]);
 $data_maksimir=Controller::db_result("SELECT * FROM rezultati_duga WHERE id_trkaca=$id AND ( (broj_kola>=9 AND broj_kola<=21)) ORDER BY vrijeme");
+
+$data_nasip_2=Controller::db_result("SELECT * FROM rezultati_kratka WHERE id_trkaca=$id AND ( (broj_kola>=1 AND broj_kola<=8) OR (broj_kola>=22)) ORDER BY vrijeme");
+//print_r($data_nasip[0]);
+$data_maksimir_2=Controller::db_result("SELECT * FROM rezultati_kratka WHERE id_trkaca=$id AND ( (broj_kola>=9 AND broj_kola<=21)) ORDER BY vrijeme");
 //print_r($data_maksimir[0]);
-echo"PB: Nasip duga  ".$data_nasip[0]["vrijeme"]." -->".$data_nasip[0]["broj_kola"].". kolo ".$data_nasip[0]["date"]."<br>";
-echo"PB: Maksimir duga  ".$data_maksimir[0]["vrijeme"]." -->".$data_maksimir[0]["broj_kola"].". kolo ".$data_maksimir[0]["date"]."<br>";
+if(isset($data_nasip[0]))echo"PB: Nasip duga  ".$data_nasip[0]["vrijeme"]." -->".$data_nasip[0]["broj_kola"].". kolo ".$data_nasip[0]["date"]."<br>";
+if(isset($data_maksimir[0]))echo"PB: Maksimir duga  ".$data_maksimir[0]["vrijeme"]." -->".$data_maksimir[0]["broj_kola"].". kolo ".$data_maksimir[0]["date"]."<br>";
+if(isset($data_nasip_2[0]))echo"PB: Nasip kratka  ".$data_nasip_2[0]["vrijeme"]." -->".$data_nasip_2[0]["broj_kola"].". kolo ".$data_nasip_2[0]["date"]."<br>";
+if(isset($data_maksimir_2[0]))echo"PB: Maksimir kratka  ".$data_maksimir_2[0]["vrijeme"]." -->".$data_maksimir_2[0]["broj_kola"].". kolo ".$data_maksimir_2[0]["date"]."<br>";
 $data=Controller::db_result("SELECT * FROM rezultati_duga WHERE id_trkaca=$id");
-echo("Broj nastupa: ".count($data)."<br>");
+$data2=Controller::db_result("SELECT * FROM rezultati_kratka WHERE id_trkaca=$id");
+echo("Broj nastupa: ".(count($data)+count($data2))."<br>");
 
 
 $data=Controller::db_result("SELECT * FROM rezultati_duga WHERE id_trkaca=$id ORDER BY vrijeme");
