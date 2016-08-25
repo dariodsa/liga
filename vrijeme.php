@@ -21,8 +21,16 @@ else
 	$pocetno=strtotime($data[0]["vrijeme"]);
 	$razlika=$vrijeme-$pocetno;
 	$razlika=View::time_format($razlika);
-	echo($razlika);
+	//echo($razlika);
 	Controller::db_query("INSERT INTO vremena VALUES ('','$razlika');");
 }
 
+$data=Controller::db_result("SELECT * FROM vremena");
+$size=count($data);
+echo("<br>Zadnja 4 vremena:<br>");
+for($i=$size-1;$i>=0 && $size-5<$i;--$i)
+{
+	echo($data[$i]["vremena"]);
+	echo("<br>");
+}
 ?>

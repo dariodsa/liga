@@ -134,6 +134,7 @@ else
 		 document.getElementById('usli').innerHTML=data;
 	 });
  }
+ 
  function myFunction3()
  {
 	 $.get("vrijeme.php?erase=1",function(data){

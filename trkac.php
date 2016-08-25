@@ -7,9 +7,6 @@ $id=$_GET['id'];
 $data=Controller::db_result("SELECT * FROM trkaci WHERE id=$id");
 
 $trkac=$data[0];
-foreach($data as $trkac){}
-echo($trkac['ime']."<br>");
-echo($trkac['godina']."<br>");
 
 /*
 Dohvati njegove PB i broj nastupa
@@ -22,13 +19,17 @@ $data_nasip_2=Controller::db_result("SELECT * FROM rezultati_kratka WHERE id_trk
 //print_r($data_nasip[0]);
 $data_maksimir_2=Controller::db_result("SELECT * FROM rezultati_kratka WHERE id_trkaca=$id AND ( (broj_kola>=9 AND broj_kola<=21)) ORDER BY vrijeme");
 //print_r($data_maksimir[0]);
-if(isset($data_nasip[0]))echo"PB: Nasip duga  ".$data_nasip[0]["vrijeme"]." -->".$data_nasip[0]["broj_kola"].". kolo ".$data_nasip[0]["date"]."<br>";
-if(isset($data_maksimir[0]))echo"PB: Maksimir duga  ".$data_maksimir[0]["vrijeme"]." -->".$data_maksimir[0]["broj_kola"].". kolo ".$data_maksimir[0]["date"]."<br>";
-if(isset($data_nasip_2[0]))echo"PB: Nasip kratka  ".$data_nasip_2[0]["vrijeme"]." -->".$data_nasip_2[0]["broj_kola"].". kolo ".$data_nasip_2[0]["date"]."<br>";
-if(isset($data_maksimir_2[0]))echo"PB: Maksimir kratka  ".$data_maksimir_2[0]["vrijeme"]." -->".$data_maksimir_2[0]["broj_kola"].". kolo ".$data_maksimir_2[0]["date"]."<br>";
+$nasip_duga="";
+$nasip_kratka="";
+$mak_kratka="";
+$mak_duga="";
+if(isset($data_nasip[0]))$nasip_duga=$data_nasip[0]["vrijeme"]." <br>".$data_nasip[0]["broj_kola"].". kolo ".$data_nasip[0]["date"].".<br>";
+if(isset($data_maksimir[0]))$mak_duga=$data_maksimir[0]["vrijeme"]." <br>".$data_maksimir[0]["broj_kola"].". kolo ".$data_maksimir[0]["date"].".<br>";
+if(isset($data_nasip_2[0]))$nasip_kratka=$data_nasip_2[0]["vrijeme"]." <br>".$data_nasip_2[0]["broj_kola"].". kolo ".$data_nasip_2[0]["date"].".<br>";
+if(isset($data_maksimir_2[0]))$mak_kratka=$data_maksimir_2[0]["vrijeme"]." <br>".$data_maksimir_2[0]["broj_kola"].". kolo ".$data_maksimir_2[0]["date"].".<br>";
 $data=Controller::db_result("SELECT * FROM rezultati_duga WHERE id_trkaca=$id");
 $data2=Controller::db_result("SELECT * FROM rezultati_kratka WHERE id_trkaca=$id");
-echo("Broj nastupa: ".(count($data)+count($data2))."<br>");
+$broj_nastupa=(count($data)+count($data2));
 
 
 $data=Controller::db_result("SELECT * FROM rezultati_duga WHERE id_trkaca=$id ORDER BY vrijeme");
@@ -60,6 +61,41 @@ foreach($godine as $pod)
 	if(isset($data2[0]))
 		array_push($best_rezultati_maksimir,$data2[0]["bodovi"],$god." - Jesen");
 }
+$spol_slika=$trkac['spol'][0]=='M'?"<img src=slike/mus.png>":"<img src=slike/zen.png>";
+echo"<br><table border=1 name=tablica id=table1  >
+		<tr>
+		  <td rowspan=2 colspan=2>Slika</td>
+		  <td>PB Nasip kratka:</td>
+		  <td>".$nasip_kratka."</td>
+		</tr>
+		<tr>
+		  <td>PB Maksimir kratka:</td>
+		  <td>".$mak_kratka."</td>
+		</tr>
+		<tr>
+		   <td>Ime i prezime:</td>
+		   <td>".$trkac['ime']."</td>
+		   <td>PB Nasip duga:</td>
+		   <td>".$nasip_duga."</td>
+		</tr>
+		<tr>
+		   <td>Godina rođenja:</td>
+		   <td>".$trkac['godina']."</td>
+		   <td>PB Maksimir duga:</td>
+		   <td>".$mak_duga."</td>
+		</tr>
+		<tr>
+		   <td>Spol:</td>
+		   <td>".$spol_slika."</td>
+		   <td>Broj nastupa:</td>
+		   <td>".$broj_nastupa."</td>
+		</tr>
+		<tr >
+		<td colspan=4 >
+";
+
+
+
 /*---------Nasip-------------------*/
 $br=1;//broj grafa
 include("graf_gornji_dio.php");
@@ -107,7 +143,7 @@ echo"chart2.draw(data2, options2);}</script>";
 
 echo'<div id="curve_chart" style="width: 900px; height: 500px"></div><br>';
 echo'<div id="curve_chart2" style="width: 900px; height: 500px"></div>';
-
+echo'</td></tr></table>';
 include('footer.php');
 ?>
        
