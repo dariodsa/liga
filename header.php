@@ -15,8 +15,8 @@
 	 <!--<tr><td colspan="6"><hr></td></tr>-->
 	 <tr style="background-color:#135898;" height="38">
 		<td width="10%"></td>
-		<td align="center">Početna</td>
-		<td align="center">Rezultati</td>
+		<td align="center" style="color:white;">Početna</td>
+		<td align="center" style="color:white;">Rezultati</td>
 		<td align="center"><a href="poredak_pocetna.php" style="text-decoration:none;color:white;">Poredak</a></td>
 		<td align="center"><a href="trazi_trkace.php" style="text-decoration: none;color:white;">Trkači</a></td>
 		<td width="10%"></td>

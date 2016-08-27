@@ -2,11 +2,13 @@
 include('header.php');
 include('controller/Controller.php');
 if(!isset($_GET['ime']))echo'
-    <form action="trazi_trkace.php" method="GET">
-		<input type="text" name="ime">
-		
+    <div style="margin-left:40px;">
+	<form action="trazi_trkace.php" method="GET">
+		<input type="text" name="ime" style="width:270px;">
+			<br><br>
 		<input value="Traži" type="submit">
 	</form>
+	</div>
 	';
 else
 {
