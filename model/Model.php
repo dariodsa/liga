@@ -41,6 +41,30 @@ class Model
 		  
 		  return "##:##";
 	  }
+	  public static function get_prerace_stats()
+	  {
+		  $data_pom=Controller::db_result("SELECT id,spol FROM trkaci");
+		  $runners=array();
+		  $ans=array();
+		  foreach($data_pom as $pom)
+		  {
+			  $runners[$pom["id"]]=$pom["spol"];
+		  }
+		  $ans["krz"]=0;
+		  $ans["krm"]=0;
+		  $ans["dum"]=0;
+		  $ans["duz"]=0;
+		  $register=Controller::db_result("SELECT tip,id_trkaca FROM prijave");
+		  foreach($register as $reg_pom)
+		  {
+			  if(!isset($runners[$reg_pom["id_trkaca"]]))continue;
+			  if($runners[$reg_pom["id_trkaca"]]=="Ž" && $reg_pom["tip"]==1)$ans["krz"]++;
+			  if($runners[$reg_pom["id_trkaca"]]=="M" && $reg_pom["tip"]==1)$ans["krm"]++;
+			  if($runners[$reg_pom["id_trkaca"]]=="Ž" && $reg_pom["tip"]!=1)$ans["duz"]++;
+			  if($runners[$reg_pom["id_trkaca"]]=="M" && $reg_pom["tip"]!=1)$ans["dum"]++;
+		  }
+		  return $ans;
+	  }
 	  public static function model_the_results($tip)
 	  {
 		  $times=Controller::db_result("SELECT * FROM vremena");

@@ -1,13 +1,14 @@
 <?
-require_once("controller/controller.php");
+require_once("controller/Controller.php");
 require_once("view/View.php");
 require_once("model/Model.php");
 if(isset($_GET['del']))
 {
 	if(isset($_GET['id']))
 	{
-		$id=$_GET['id'];
+		foreach($_GET as $k=>$p)$$k=$p;
 		Controller::db_query("DELETE FROM prijave WHERE id='$id'");
+		Controller::go_to("prijave.php?type=".$type);
 	}
 }
 else if(isset($_GET['edit']))
@@ -48,4 +49,4 @@ else View::show_registered_runners($_GET['type']);
 ?>
 
 <br><br><br>
-<form action="index.php"><input type="submit" value="Početna"></form>
+<form action="index2.php"><input type="submit" value="Početna"></form>

@@ -81,7 +81,12 @@ foreach($godine as $pod)
 $spol_slika=$trkac['spol'][0]=='M'?"<img src=slike/mus.png>":"<img src=slike/zen.png>";
 echo"<br><table border=1 name=tablica id=table1  >
 		<tr>
-		  <td rowspan=2 colspan=2>Slika</td>
+		  <td rowspan=2 colspan=2>
+		     <img src=slike_trkaca/".$id.".png height=280 width=100";
+			 echo' style="min-height:100%;min-width:80%;margin:auto;"><br>';
+			 echo"
+			 <a href=slika.php?id=".$id." align=center>Postavi sliku</a>
+		  </td>
 		  <td>PB Nasip kratka:</td>
 		  <td>".$nasip_kratka."</td>
 		</tr>
@@ -226,10 +231,11 @@ if(count($best_rezultati_maksimir_k)>0)
 }
 
 echo"}</script>";
-if(count($best_rezultati_nasip_k)>0)echo'<div id="curve_chart3" style="width: 900px; height: 500px"></div><br>';
-if(count($best_rezultati_maksimir_k)>0)echo'<div id="curve_chart4" style="width: 900px; height: 500px"></div><br>';
 if(count($best_rezultati_nasip)>0)echo'<div id="curve_chart" style="width: 900px; height: 500px"></div><br>';
 if(count($best_rezultati_maksimir)>0)echo'<div id="curve_chart2" style="width: 900px; height: 500px"></div>';
+if(count($best_rezultati_nasip_k)>0)echo'<div id="curve_chart3" style="width: 900px; height: 500px"></div><br>';
+if(count($best_rezultati_maksimir_k)>0)echo'<div id="curve_chart4" style="width: 900px; height: 500px"></div><br>';
+
 echo'</td></tr></table>';
 include('footer.php');
 ?>

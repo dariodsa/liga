@@ -1,5 +1,5 @@
 <?
-include('header.php');
+//include('header.php');
 require_once('controller/Controller.php');
 require_once('model/Model.php');
 require_once('view/View.php');
@@ -18,7 +18,12 @@ $informacije=Controller::db_result("SELECT * FROM kolo_informacije  WHERE broj=$
 $rezultat=Controller::db_result("SELECT * FROM rezultati_".$tip."  WHERE broj_kola=$kolo AND date=$godina ORDER BY vrijeme ASC");
 echo'<div style="margin-left:150px">';
 View::print_headline($tip_2." <br>".$_GET['kolo'].".kolo, ".$_GET['godina']);
-echo($informacije[0]["text"]);
+if(isset($informacije[0]["text"]))echo($informacije[0]["text"]);
+if(count($rezultat)==0)
+{
+	echo"Nemam podatke o toj trci. :-(";
+	return;
+}
 echo'<div><br><table style="margin-left:110px;">';
 echo'
     <tr>
@@ -48,5 +53,5 @@ foreach($rezultat as $podatak)
 	++$broj;
 }
 echo"</table>";
-include('footer.php');
+//include('footer.php');
 ?>

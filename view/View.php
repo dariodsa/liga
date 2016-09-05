@@ -6,7 +6,7 @@ class View
 	 {
 		 echo'
 			<meta charset="UTF-8">
-			<form action="index.php" method="GET">
+			<form action="index2.php" method="GET">
 			<table>
 				<tr>
 					<td>Korisničko ime: </td>
@@ -28,7 +28,7 @@ class View
 	 {
 		
 		 echo'
-		 <form action="index.php" method="GET">
+		 <form action="index2.php" method="GET">
 		   <table height="100%" width="100%">
 		     <tr>
 		       <td align="center"><button type="submit" name="kratka" value="Prijave_kratke" id="button"> Prijava kratka</td>
@@ -47,13 +47,114 @@ class View
 	 }
 	 public static function show_live_results()
 	 {
-		 
+		 $data=Controller::db_result("SELECT * FROM status");
+		 if(count($data)==0)
+		 {
+			 /*
+			 * Obrazac za prijavu detalja lige
+			 */
+			 View::register_race_form();
+		 }
 	 }
 	 public static function show_reload_button()
 	 {
 		 echo'
 			<button onclick="location.reload();">Osvježi</button><br>
 		 ';
+		 return;
+	 }
+	 public static function register_race_form()
+	 {
+		 echo'
+		     <form method="POST">
+				Suci: <input type=text" name="suci"><br>
+				Vrijeme: <input type="text" name="vrijeme"><br>
+				Kolo: <input type="number" name="kolo" min="1" max="26">
+				<input type="submit" value="Pošalji">
+			 </form>
+		 ';
+		 return;
+	 }
+	 public static function set_results_check_form()
+	 {
+		 echo'
+		     Tip: <select name="tip" id="tip">
+				<option value="0">Kratka</option>
+				<option value="1">Duga</option>
+			  </select>
+			  <br>
+			 Godina: <input type="number" name="godina" placeholder="2015" id="godina"><br>
+			 Kolo: <select name="kolo" id="kolo">
+						<option value="1">1.kolo</option>
+						<option value="2">2.kolo</option>
+						<option value="3">3.kolo</option>
+						<option value="4">4.kolo</option>
+						<option value="5">5.kolo</option>
+						<option value="6">6.kolo</option>
+						<option value="7">7.kolo</option>
+						<option value="8">8.kolo</option>
+						<option value="9">9.kolo</option>
+						<option value="10">10.kolo</option>
+						<option value="11">11.kolo</option>
+						<option value="12">12.kolo</option>
+						<option value="13">13.kolo</option>
+						<option value="14">14.kolo</option>
+						<option value="15">15.kolo</option>
+						<option value="16">16.kolo</option>
+						<option value="17">17.kolo</option>
+						<option value="18">18.kolo</option>
+						<option value="19">19.kolo</option>
+						<option value="20">20.kolo</option>
+						<option value="21">21.kolo</option>
+						<option value="22">22.kolo</option>
+						<option value="23">23.kolo</option>
+						<option value="24">24.kolo</option>
+						<option value="25">25.kolo</option>
+						<option value="26">26.kolo</option>
+					</select>
+					<br>
+				    <button name="button1" onclick="nadi()" >Pogledaj</button>
+					<br>
+					<div id="rez">
+					</div>
+		';
+		echo'
+		   <script>
+		      
+			  function nadi()
+			 {
+				 var godina=document.getElementById("godina").value;
+				 var tip=document.getElementById("tip").value;
+				 var kolo=document.getElementById("kolo").value;
+				 if(tip=="0")
+				 {
+					 $.get("rezultati.php?kolo="+kolo+"&godina="+godina,function(data){
+					document.getElementById("rez").innerHTML=data;
+					});
+				 }
+				 else
+				 {
+					 $.get("rezultati.php?kolo="+kolo+"&godina="+godina+"&tip=2",function(data){
+					document.getElementById("rez").innerHTML=data;
+					});
+				 }
+			 }
+		   </script>
+		   
+		';
+	 }
+	 public static function image_upload_form($id="")
+	 {
+		 echo' 
+		   <form method="POST" enctype="multipart/form-data">
+		      
+			  <input type="file" value="Slika" name="fileToUpload">
+			  <input type="hidden" value="'.$id.'" name="id"><br><br>
+			  <input type="submit" value="Pošalji" name="submit">
+		   
+		   </form>
+		 ';
+		 return;
 	 }
 	 public static function show_registered_runners($type)
 	 {
@@ -72,7 +173,15 @@ class View
 			 echo"</tr>";
 		 }
 		 echo"</table>";
+		 
+		 $stats=Model::get_prerace_stats();
+		 
+		 echo"Statistika:<br>";
+		 echo"Broj prijava za kratku: ".($stats["krz"]+$stats["krm"])." (".$stats["krz"].",".$stats["krm"].")<br>";
+		 echo"Broj prijava za dugu: ".($stats["duz"]+$stats["dum"])." (".$stats["duz"].",".$stats["dum"].")<br>";
+		 echo"Ukupno ".($stats["duz"]+$stats["dum"]+$stats["krz"]+$stats["krm"])." (".($stats["duz"]+$stats["krz"]).",".($stats["dum"]+$stats["krm"]).")<br>";
 		 //echo'<form action="prijave.php"><input value="Povratak na listu" type="submit"><input type="hidden" name="type" value="'.$type.'"></form>';
+		 return;
 	 }
 	 public static function time_format($num)
 	 {
@@ -101,7 +210,7 @@ class View
 	 }
 	 public static function ispis_trkaca($name,$type)
 	 {
-		echo'<form action="index.php" method="GET">';
+		echo'<form action="index2.php" method="GET">';
 		echo' <select name="runner_id">';
 		$data=Model::list_of_runners($name,$type);
 		foreach($data as $k)
