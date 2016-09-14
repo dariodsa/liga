@@ -55,6 +55,12 @@ else if(isset($_GET['brojevi']))
 }
 else if(isset($_GET['glavni']))
 {
+	if(isset($_POST['register_race_form']))
+	{
+		$tekst=$_POST['kolo'].".kolo<br> Vrijeme: ".$_POST['vrijeme']."<br> Suci: ".$_POST['suci'];
+		echo"INSERT INTO status (id,text) VALUES (,'$tekst');";
+		Controller::db_query("INSERT INTO status (id,text) VALUES ('','$tekst');");
+	}
 	View::show_live_results();
 }
 else if(isset($_GET['kratka']))

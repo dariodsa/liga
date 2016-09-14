@@ -55,6 +55,28 @@ class View
 			 */
 			 View::register_race_form();
 		 }
+		 else
+		 {
+			/*
+			* Ispis detalja lige
+			*/
+			echo($data[0]["text"]);
+			echo"<br>";
+			View::show_reload_button();
+			View::print_headline("Rezultati duga");
+			Model::model_the_results(2,1);
+			View::print_headline("Rezultati kratka");
+			Model::model_the_results(1,1);
+		 }
+		 /*
+		 * Objava rezultata
+		 */
+		 echo'<br><input type="button" onclick="fun()" value="Objavi rezultate">';
+		 echo'<script>function fun()
+				{
+					document.location="objava.php";
+				}
+			 </script>';
 	 }
 	 public static function show_reload_button()
 	 {
@@ -70,7 +92,7 @@ class View
 				Suci: <input type=text" name="suci"><br>
 				Vrijeme: <input type="text" name="vrijeme"><br>
 				Kolo: <input type="number" name="kolo" min="1" max="26">
-				<input type="submit" value="Pošalji">
+				<input name="register_race_form" type="submit" value="Pošalji">
 			 </form>
 		 ';
 		 return;

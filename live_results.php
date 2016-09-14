@@ -5,6 +5,7 @@ require_once("Controller/controller.php");
 
 
 
+
 View::show_reload_button();
 View::print_headline("Rezultati duga");
 Model::model_the_results(2);

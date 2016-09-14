@@ -41,6 +41,19 @@ class Model
 		  
 		  return "##:##";
 	  }
+	  public static function time_model($vrijeme)
+	  {
+		  sscanf($vrijeme, "%d:%d",$minutes, $seconds);
+		  if($seconds<10)
+		  {
+			  $seconds="0".$seconds;
+		  }
+		  if($minutes<10)
+		  {
+			  $minutes="0".$minutes;
+		  }
+		  return $minutes.":".$seconds;
+	  }
 	  public static function get_prerace_stats()
 	  {
 		  $data_pom=Controller::db_result("SELECT id,spol FROM trkaci");
@@ -65,7 +78,82 @@ class Model
 		  }
 		  return $ans;
 	  }
-	  public static function model_the_results($tip)
+	  public static function get_round_number()
+	  {
+		  $data=Controller::db_result("SELECT * FROM status");
+		  $pom=$data[0]["text"];
+		  $br=0;
+		  $i=0;
+		  for($i=0;$i<strlen($pom);++$i)
+		  {
+			  if($pom[$i]>='0' && $pom[$i]<='9')
+			  {
+				  $br=$br*10+($pom[$i]-'0');
+			  }
+			  else break;
+		  }
+		  return $br;
+	  }
+	  public static function get_results($kolo,$tip)
+	  {
+		  $times=Controller::db_result("SELECT * FROM vremena");
+		  $bid=Controller::db_result("SELECT * FROM brojevi");
+		  $data=Controller::db_result("SELECT * FROM prijave WHERE tip='".$tip."'");
+		  $runners=Controller::db_result("SELECT * FROM trkaci ORDER BY id");
+		  $con=new Controller($data,$runners);
+
+		  //Construct array which connect bid with runner_id
+		  $mapa=array();
+		  $i=0;
+		  foreach($data as $data_pom)
+		  {
+			  $mapa[$data_pom["broj"]][0]=$data_pom["id_trkaca"];
+		  }
+		  foreach($bid as $bid_pom)
+		  {
+			  $mapa[$bid_pom["broj"]][1]=$times[$i++]["vremena"];
+			  
+		  }
+		  $i=0;
+		  $god=date("Y");
+		  foreach($bid as $bid_pom)
+		  {
+			 if(isset($mapa[$bid_pom["broj"]][0]))
+			 {
+				 $runner=($con->find($mapa[$bid_pom["broj"]][0]));
+				 $runner_id=$runner["id"];
+				 $vrijeme=isset($mapa[$bid_pom["broj"]][1])?$mapa[$bid_pom["broj"]][1]:'';
+				 $vrijeme=Model::time_model($vrijeme);
+				 $bodovi=Model::get_points($tip,$vrijeme,$kolo);
+				 $bodovi=round($bodovi,3);
+				 echo"$runner_id, $kolo, $vrijeme, $bodovi,$god<br>";
+				 if($tip==2)Controller::db_query("INSERT INTO rezultati_duga VALUES ('','$runner_id','$kolo','$vrijeme',$bodovi,'$god')");
+				 else if($tip==2)Controller::db_query("INSERT INTO rezultati_kratka VALUES ('','$runner_id','$kolo','$vrijeme',$bodovi,'$god')");
+			 }
+		  }
+	  }
+	  public static function get_points($tip,$vrijeme,$kolo)
+	  {
+		  sscanf($vrijeme, "%d:%d",$minutes, $seconds);
+		  if($tip==2)//Duga
+		  {
+			  return (1520/($minutes*60+$seconds))*(1520/($minutes*60+$seconds))*100;
+		  }
+		  else//Kratka
+		  {
+			  if($kolo<=8 && $kolo>=22)
+			  {
+				  //Nasip
+				  return (870/($minutes*60+$seconds))*(870/($minutes*60+$seconds))*100;
+			  }
+			  else
+			  {
+				  //Maksimir
+				  return (760/($minutes*60+$seconds))*(760/($minutes*60+$seconds))*100;
+			  }
+		  }
+	  }
+	  public static function model_the_results($tip,$edit=0)
 	  {
 		  $times=Controller::db_result("SELECT * FROM vremena");
 		  $bid=Controller::db_result("SELECT * FROM brojevi");
@@ -94,9 +182,14 @@ class Model
 			 {
 				 $runner=($con->find($mapa[$bid_pom["broj"]][0]));
 				 $vrijeme=isset($mapa[$bid_pom["broj"]][1])?$mapa[$bid_pom["broj"]][1]:'';
-				 echo"<tr><td>$poredak.</td>";
-				 echo "<td>".$runner["ime"]."</td><td>".$vrijeme."</td></tr>";
-				 
+				 $vrijeme=Model::time_model($vrijeme);
+				 echo"<tr height=70><td>$poredak.</td>";
+				 echo "<td>".$runner["ime"]."</td><td>".$vrijeme."</td>";
+				 if($edit)
+				 {
+					 echo"<td>EDIT</td>";
+				 }
+				 echo"</tr>";
 			 	 ++$poredak;
 			 }
 			 ++$i;
