@@ -7,10 +7,12 @@ include('controller/Controller.php');
 	//print_r($data);
 	foreach($data as $pod)
 	{
-		echo"$broj. ".$pod["godina"]." <a href=poredak.php?godina=".$pod["godina"]."&tip=1>Duga</a>&nbsp;&nbsp;&nbsp;";
+		echo"".$pod["godina"].". <a href=poredak.php?godina=".$pod["godina"]."&tip=1>Duga</a>&nbsp;&nbsp;&nbsp;";
 		echo"<a href=poredak.php?godina=".$pod["godina"]."&tip=2>Kratka</a><br>";
 		++$broj;
 		
 	}
-include('footer.php');
+	echo"<br><a href=poredak_top_list.php?tip=1>Best of Nasip</a><br>";
+	echo"<br><a  href=poredak_top_list.php?tip=2>Best of Maksimir</a><br>";
+	include('footer.php');
 ?>

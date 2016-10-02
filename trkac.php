@@ -1,4 +1,5 @@
 <?
+error_reporting(0);
 include('header.php');
 include('controller/Controller.php');
 if(!isset($_GET['id']))exit();
@@ -79,11 +80,18 @@ foreach($godine as $pod)
 		array_push($best_rezultati_maksimir_k,$data2[0]["bodovi"],$god." - Jesen");
 }
 $spol_slika=$trkac['spol'][0]=='M'?"<img src=slike/mus.png>":"<img src=slike/zen.png>";
+
+/*Korekcija slike profila*/
+
+$data = getimagesize("slike_trkaca/".$id.".png");
+$visina_slike=($data[1]/$data[0])*260;
+
+
 echo"<br><table border=1 name=tablica id=table1  >
 		<tr>
 		  <td rowspan=2 colspan=2>
-		     <img src=slike_trkaca/".$id.".png height=280 width=100";
-			 echo' style="min-height:100%;min-width:80%;margin:auto;"><br>';
+		     <img src=slike_trkaca/".$id.".png height=".$visina_slike." width=260";
+			 echo'><br>';
 			 echo"
 			 <a href=slika.php?id=".$id." align=center>Postavi sliku</a>
 		  </td>

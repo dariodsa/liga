@@ -78,6 +78,35 @@ class View
 				}
 			 </script>';
 	 }
+	 public static function show_best_results($tip) 
+	 {
+		 if($tip==1)
+		 {
+			 $data=Controller::db_result("SELECT id_trkaca,vrijeme,date FROM rezultati_duga WHERE ((broj_kola>='1' AND broj_kola<='8') OR (broj_kola>='22' AND broj_kola<='26'))");
+		 }
+		 else 
+		 {
+			 $data=Controller::db_result("SELECT id_trkaca,vrijeme,date FROM rezultati_duga WHERE ((broj_kola>='9' AND broj_kola<='21'))");
+		 }
+		 $data=Model::get_unique_results($data);
+		 $data3=array();//mora biti prazan jer ga ne koristim, pogledaj kontruktor
+		 $trkaci=Controller::db_result("SELECT * FROM trkaci");
+		 $con=new Controller($data3,$trkaci);
+		 $poredak=1;
+		 echo"<table border=1>";
+		 foreach($data as $pom)
+		 {
+			 $runner=$con->find($pom["id_trkaca"]);
+			 echo"<tr>";
+			 echo"<td>$poredak.</td>";
+			 echo"<td>".($runner["ime"])."</td>";
+			 echo"<td>".$pom["vrijeme"]."</td>";
+			 echo"<td>".$pom["date"]."</td>";
+			 echo"</tr>";
+			 ++$poredak;
+		 }
+		 echo"</table>";
+	 }
 	 public static function show_reload_button()
 	 {
 		 echo'

@@ -1,6 +1,9 @@
 <?
 include('./baza.php');
-
+function cmp3($a, $b)
+{
+    return strcmp($a["vrijeme"], $b["vrijeme"]);
+}
 class Model
 {
       public $kategorije;
@@ -93,6 +96,31 @@ class Model
 			  else break;
 		  }
 		  return $br;
+	  }
+	  public static function get_unique_results($data)
+	  {
+		  $trkaci=array();
+		  foreach($data as $pom)
+		  {
+			  if(isset($trkaci[$pom["id_trkaca"]]["vrijeme"])==false)
+			  {
+				  $trkaci[$pom["id_trkaca"]]["vrijeme"]=$pom["vrijeme"];
+				  $trkaci[$pom["id_trkaca"]]["id_trkaca"]=$pom["id_trkaca"];
+				  $trkaci[$pom["id_trkaca"]]["date"]=$pom["date"];
+			  }
+			  else
+			  {
+				  if($trkaci[$pom["id_trkaca"]]["vrijeme"]>$pom["vrijeme"])
+				  {
+					  $trkaci[$pom["id_trkaca"]]["vrijeme"]=$pom["vrijeme"];
+					  $trkaci[$pom["id_trkaca"]]["id_trkaca"]=$pom["id_trkaca"];
+					  $trkaci[$pom["id_trkaca"]]["date"]=$pom["date"];
+				  }
+			  }
+			  
+		  }
+		  usort($trkaci,"cmp3");
+		  return $trkaci;
 	  }
 	  public static function get_results($kolo,$tip)
 	  {

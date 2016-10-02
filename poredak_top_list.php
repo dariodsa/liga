@@ -1,0 +1,22 @@
+<?
+include('header.php');
+require_once('model/Model.php');
+require_once('controller/Controller.php');
+require_once('view/View.php');
+if(isset($_GET['tip']))
+{
+	if($_GET['tip']=='1')
+	{
+		//NASIP
+		View::print_headline("Nasip");
+		View::show_best_results(1);
+	}
+	else
+	{
+		//MAKSIMIR
+		View::print_headline("Maksimir");
+		View::show_best_results(2);
+	}
+}
+include('footer.php');
+?>
