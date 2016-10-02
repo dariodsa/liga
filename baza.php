@@ -1,5 +1,5 @@
 <?
-$korisnik="root";//"akvetera_wp1";
+$korisnik="root";//"akvetera_wp135";
 $lozinka="";//"IL#N^paXwP3!0";
 $baza="liga";//"akvetera_wp1";
 //$con = new PDO('mysql:host='.$host.';dbname='.$db.';charset=utf8', $user, $pass);
