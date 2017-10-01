@@ -1,12 +1,12 @@
 <?
-$korisnik="root";//"akvetera_wp135";
-$lozinka="";//"IL#N^paXwP3!0";
-$baza="liga";//"akvetera_wp1";
+$korisnik="root";
+$lozinka="";
+$baza="liga";
 //$con = new PDO('mysql:host='.$host.';dbname='.$db.';charset=utf8', $user, $pass);
 $con=new PDO('mysql:host=localhost;dbname='.$baza.';charset=utf8',$korisnik,$lozinka);
 $con->exec("set names utf8");
 $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $bp=mysql_connect("localhost",$korisnik,$lozinka);
-mysql_select_db($baza,$bp) or die( "Greška kod povezivanja na bazu!");
+mysql_select_db($baza,$bp) or die( "GreÅ¡ka kod povezivanja na bazu!");
 mysql_query("SET NAMES utf8"); 
 ?>
